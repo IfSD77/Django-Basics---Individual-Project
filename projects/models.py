@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.text import slugify
 
 
 class ConstructionType(models.Model):
@@ -25,6 +26,12 @@ class Project(models.Model):
     name = models.CharField(
         max_length=100,
         verbose_name='Project Name'
+    )
+    slug = models.SlugField(
+        max_length=200,
+        unique=True,
+        blank=True,
+        verbose_name="Slug (for URL)"
     )
     construction_type = models.ForeignKey(
         ConstructionType,
@@ -73,17 +80,28 @@ class Project(models.Model):
         verbose_name_plural = "Projects"
 
     def save(self, *args, **kwargs):
+        if not self.slug and self.name:
+            self.slug = slugify(self.name)
+
         if self.postcode:
             self.postcode = self.postcode.upper().strip()
+
         super().save(*args, **kwargs)
 
     def __str__(self):
         year_part = f" ({self.built_in})" if self.built_in else ""
         return f"{self.name}{year_part}"
 
-    def get_contract_value_display(self):
+    def get_contract_value_short(self):
         if self.contract_value_confidential:
             return "Confidential"
-        if self.contract_value is None:
-            return "Not specified"
-        return f"£{self.contract_value:,.2f}"
+        if self.contract_value is None or self.contract_value == 0:
+            return "N/A"
+
+        value = float(self.contract_value)
+        if value >= 1_000_000:
+            return f"£{value / 1_000_000:.1f}m"
+        elif value >= 1_000:
+            return f"£{value / 1_000:,.0f}k"
+        else:
+            return f"£{value:,.0f}"

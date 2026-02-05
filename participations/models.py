@@ -3,10 +3,12 @@ from django.db import models
 
 class Participation(models.Model):
     ROLE_CHOICES = [
+        ('architect', 'Architect'),
         ('lead_architect', 'Lead Architect'),
+        ('architectural_designer', 'Architectural Designer'),
         ('structural_engineer', 'Structural Engineer'),
         ('senior_structural_engineer', 'Senior Structural Engineer'),
-        ('architectural_designer', 'Architectural Designer'),
+        ('structural_designer', 'Structural Designer'),
         ('technical_lead', 'Technical Lead'),
         ('structural_consultant', 'Structural Consultant'),
         ('other', 'Other'),

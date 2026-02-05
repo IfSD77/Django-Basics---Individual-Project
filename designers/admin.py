@@ -1,3 +1,4 @@
 from django.contrib import admin
+from designers.models import Designer
 
-# Register your models here.
+admin.site.register(Designer)
