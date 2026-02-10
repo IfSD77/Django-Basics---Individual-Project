@@ -16,13 +16,19 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.views.generic import TemplateView
+from projects.views import ProjectListView, ProjectDetailView, ProjectCreateView, ProjectUpdateView
 from django.conf import settings
 from django.conf.urls.static import static
-from django.views.generic import TemplateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', TemplateView.as_view(template_name='home.html'), name='home')
+    path('', TemplateView.as_view(template_name='home.html'), name='home'),
+    path('projects/add/', ProjectCreateView.as_view(), name='project_add'),
+    path('projects/', ProjectListView.as_view(), name='project_list'),
+    path('projects/<slug:slug>/edit/', ProjectUpdateView.as_view(), name='project_edit'),
+    path('projects/<slug:slug>/', ProjectDetailView.as_view(), name='project_detail'),
+
 ]
 
 if settings.DEBUG:
