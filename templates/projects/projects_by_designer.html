@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}Projects by {{ designer.full_name }}{% endblock %}
+
+{% block content %}
+  <h1>Projects by {{ designer.full_name }} ({{ designer.profession }})</h1>
+
+  <p>Participated in {{ projects.count }} projects</p>
+
+  <div class="row">
+    {% for project in projects %}
+      <div class="col-md-4 mb-4">
+        <div class="card">
+          {% if project.image %}
+            <img src="{{ project.image.url }}" class="card-img-top" alt="{{ project.name }}">
+          {% endif %}
+          <div class="card-body">
+            <h5 class="card-title">{{ project.name }}</h5>
+            <p class="card-text">
+              Built in: {{ project.built_in|default:"N/A" }}<br>
+              Location: {{ project.location }}, {{ project.postcode }}<br>
+              Value: {{ project.get_contract_value_short }}
+            </p>
+            <a href="{% url 'project_detail' project.slug %}" class="btn btn-primary">Details</a>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <p>No projects found for this designer.</p>
+    {% endfor %}
+  </div>
+
+  <a href="{% url 'project_list' %}" class="btn btn-secondary mt-3">Back to All Projects</a>
+{% endblock %}

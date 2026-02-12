@@ -17,7 +17,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.views.generic import TemplateView
-from projects.views import ProjectListView, ProjectDetailView, ProjectCreateView, ProjectUpdateView
+from projects.views import ProjectListView, ProjectDetailView, ProjectCreateView, ProjectUpdateView, ProjectDeleteView, \
+    project_stats, project_by_year, project_by_type, projects_by_designer
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -25,14 +26,19 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', TemplateView.as_view(template_name='home.html'), name='home'),
     path('projects/add/', ProjectCreateView.as_view(), name='project_add'),
-    path('projects/', ProjectListView.as_view(), name='project_list'),
     path('projects/<slug:slug>/edit/', ProjectUpdateView.as_view(), name='project_edit'),
+    path('projects/<slug:slug>/delete/', ProjectDeleteView.as_view(), name='project_delete'),
+    path('about/', TemplateView.as_view(template_name='about.html'), name='about'),
+    path('projects/stats/', project_stats, name='project_stats'),
+    path('projects/type/<int:type_id>/', project_by_type, name='project_by_type'),
+    path('projects/year/<int:year>/', project_by_year, name='project_by_year'),
+    path('projects/designer/<int:designer_id>/', projects_by_designer, name='projects_by_designer'),
+    path('projects/', ProjectListView.as_view(), name='project_list'),
     path('projects/<slug:slug>/', ProjectDetailView.as_view(), name='project_detail'),
-
 ]
+
+handler404 = 'django.views.defaults.page_not_found'
 
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-

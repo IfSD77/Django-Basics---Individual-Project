@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}Page Not Found{% endblock %}
+
+{% block content %}
+  <div class="container my-5 text-center">
+    <h1 class="display-1 text-danger">404</h1>
+    <h2>Oops! Page Not Found</h2>
+    <p class="lead">The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.</p>
+    
+    <a href="{% url 'home' %}" class="btn btn-primary btn-lg mt-4">Go to Home Page</a>
+    
+    <p class="mt-5 text-muted">
+      If you believe this is an error, please contact the administrator.
+    </p>
+  </div>
+{% endblock %}

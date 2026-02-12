@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}Project Statistics{% endblock %}
+
+{% block content %}
+  <h1 class="mb-4">Project Statistics</h1>
+
+  <div class="row">
+    <div class="col-md-4">
+      <div class="card text-center mb-4">
+        <div class="card-body">
+          <h5 class="card-title">Total Projects</h5>
+          <p class="card-text display-4">{{ total_projects }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card text-center mb-4">
+        <div class="card-body">
+          <h5 class="card-title">Total Contract Value</h5>
+          <p class="card-text display-4">{{ total_value|floatformat:2 }} £</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card text-center mb-4">
+        <div class="card-body">
+          <h5 class="card-title">Average Value</h5>
+          <p class="card-text display-4">{{ average_value|floatformat:2 }} £</p>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

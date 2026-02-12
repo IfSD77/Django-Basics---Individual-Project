@@ -13,13 +13,13 @@ class ProjectForm(forms.ModelForm):
             'built_in': forms.NumberInput(attrs={'placeholder': 'e.g. 2023'}),
         }
 
-    def clean_built_in(self):
+    def clean_built_in(self) -> None:
         built_in = self.cleaned_data.get('built_in')
-        if built_in and (built_in < 1900 or built_in > 2030):
-            raise forms.ValidationError("Year must be between 1900 and 2030.")
+        if built_in and (built_in < 1900 or built_in > 2026):
+            raise forms.ValidationError("Year must be between 1900 and 2026.")
         return built_in
 
-    def clean_contract_value(self):
+    def clean_contract_value(self) -> None:
         value = self.cleaned_data.get('contract_value')
         if value and value < 0:
             raise forms.ValidationError("Contract value cannot be negative.")

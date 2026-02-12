@@ -1,12 +1,12 @@
 from django.contrib import admin
 from .models import ConstructionType, Project
-from participations.models import Participation  # ← само модела, не admin!
+from participations.models import Participation
 
 
 class ParticipationInline(admin.TabularInline):
     model = Participation
-    extra = 1  # колко празни реда по подразбиране
-    raw_id_fields = ['designer']  # ако имаш много дизайнери – търсене
+    extra = 1
+    raw_id_fields = ['designer']
 
 
 @admin.register(Project)
