@@ -1,23 +1,21 @@
 {% extends 'base.html' %}
-{% block title %}Projects by Construction Type{% endblock %}
+{% block title %}Projects by Year{% endblock %}
 
 {% block content %}
 <div class="container my-5">
-    <h1 class="mb-5 text-center">Projects by Construction Type</h1>
+    <h1 class="mb-5 text-center">Projects by Year</h1>
 
-    {% for ctype in construction_types %}
-        {% if ctype.projects.all %}
-        <h3 class="mt-5 mb-4">{{ ctype.name }}</h3>
+    {% for year, year_projects in projects_by_year.items %}
+        <h3 class="mt-5 mb-3">{{ year }}</h3>
 
         <div class="row g-4">
-            {% for project in ctype.projects.all %}
+            {% for project in year_projects %}
             <div class="col-lg-6">
                 <div class="card h-100 shadow-sm">
                     <div class="card-body">
                         <h5 class="card-title">{{ project.name }}</h5>
                         <p class="card-text">
                             <strong>Location:</strong> {{ project.location }}, {{ project.postcode }}<br>
-                            <strong>Built in:</strong> {{ project.built_in|default:"N/A" }}<br>
                             <strong>Value:</strong> {{ project.get_contract_value_short }}
                         </p>
                         <a href="{% url 'project_detail' project.slug %}"
@@ -27,7 +25,6 @@
             </div>
             {% endfor %}
         </div>
-        {% endif %}
     {% empty %}
         <p class="text-center text-muted">No projects found.</p>
     {% endfor %}

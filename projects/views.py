@@ -1,3 +1,4 @@
+from collections import defaultdict
 from django.db.models import Sum, Avg
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, get_object_or_404
@@ -43,6 +44,13 @@ class ProjectDeleteView(DeleteView):
     success_url = reverse_lazy('project_list')
 
 
+class DesignerListView(ListView):
+    model = Designer
+    template_name = 'designers/designer_list.html'
+    context_object_name = 'designers'
+    ordering = ['full_name']
+
+
 def project_stats(request: HttpRequest) -> HttpResponse:
     total_projects = Project.objects.count()
     total_value = Project.objects.filter(contract_value__isnull=False, contract_value_confidential=False).aggregate(total=Sum('contract_value'))['total'] or 0
@@ -56,16 +64,29 @@ def project_stats(request: HttpRequest) -> HttpResponse:
     return render(request, 'projects/project_stats.html', context)
 
 
-def project_by_year(request: HttpRequest, year) -> HttpResponse:
-    projects = Project.objects.filter(built_in=year).order_by('name')
-    context = {'projects': projects, 'year': year}
-    return render(request, 'projects/project_by_year.html', context)
+def projects_by_year(request):
+    projects = Project.objects.order_by('-built_in', 'name')
+    projects_by_year_dict = defaultdict(list)
+    for project in projects:
+        year = project.built_in
+        if year:
+            projects_by_year_dict[year].append(project)
+
+    context = {
+        'projects_by_year': dict(projects_by_year_dict),
+    }
+    return render(request, 'projects/projects_by_year.html', context)
 
 
-def project_by_type(request: HttpRequest, type_id) -> HttpResponse:
-    ctype = ConstructionType.objects.get(id=type_id)
-    projects = Project.objects.filter(construction_type=ctype).order_by('-built_in')
-    context = {'projects': projects, 'construction_type': ctype.name}
+def projects_by_type(request):
+    from django.db.models import Prefetch
+    construction_types = ConstructionType.objects.prefetch_related(
+        Prefetch('projects', queryset=Project.objects.order_by('-built_in'))
+    ).all()
+
+    context = {
+        'construction_types': construction_types,
+    }
     return render(request, 'projects/projects_by_type.html', context)
 
 
@@ -74,3 +95,4 @@ def projects_by_designer(request: HttpRequest, designer_id: int) -> HttpResponse
     projects = Project.objects.filter(participations__designer=designer).order_by('-built_in')
     context = {'projects': projects, 'designer': designer}
     return render(request, 'projects/projects_by_designer.html', context)
+

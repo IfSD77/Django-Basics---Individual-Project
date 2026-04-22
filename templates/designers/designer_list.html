@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}Our Design Team{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="mb-5 text-center">Our Design Team</h1>
+
+    <div class="row g-4">
+        {% for designer in designers %}
+        <div class="col-lg-4 col-md-6">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title mb-3">{{ designer.full_name }}</h5>
+
+                    <p class="mb-2">
+                        <strong>Profession:</strong> {{ designer.profession|default:"Not specified" }}
+                    </p>
+
+                    <p class="mb-3">
+                        <strong>Projects participated:</strong>
+                        <span class="badge bg-primary fs-6">{{ designer.participations.count }}</span>
+                    </p>
+
+                    {% if designer.short_bio %}
+                    <p class="card-text text-muted flex-grow-1">
+                        {{ designer.short_bio|truncatewords:35 }}...
+                    </p>
+                    {% endif %}
+
+                    <div class="mt-auto pt-3">
+                        <a href="{% url 'projects_by_designer' designer.id %}"
+                           class="btn btn-primary w-100">
+                            View Profile
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <p class="text-center text-muted">No designers found in the database.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
